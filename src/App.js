@@ -5,12 +5,14 @@ import { ToastContainer } from "react-toastify";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "react-toastify/dist/ReactToastify.css";
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-boost';
 import Header from "./components/Header";
 import Wrapper from "./components/Wrapper";
 // import NowWhat from "./components/NowWhat";
 import SelectDropDown from "./components/SelectDropDown";
-import { ApolloProvider } from 'react-apollo';
-import ApolloClient from 'apollo-boost';
+import CurrentDataContainer from "./components/CurrentDataContainer";
+
 
 const client = new ApolloClient({
   uri: "https://react.eogresources.com/graphql",
@@ -43,6 +45,7 @@ const App = props => (
         <Wrapper>
           <Header />
           <SelectDropDown/>
+          <CurrentDataContainer/>
           {/* <NowWhat /> */}
           <ToastContainer />
         </Wrapper>
