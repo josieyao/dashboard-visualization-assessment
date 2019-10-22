@@ -5,17 +5,37 @@ import { ToastContainer } from "react-toastify";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "react-toastify/dist/ReactToastify.css";
-import { ApolloProvider } from 'react-apollo';
-import ApolloClient from 'apollo-boost';
+import {
+  cacheExchange,
+  createClient,
+  debugExchange,
+  fetchExchange,
+  Provider as UrqlProvider,
+  subscriptionExchange
+} from "urql";
+import { SubscriptionClient } from "subscriptions-transport-ws";
 import Header from "./components/Header";
 import Wrapper from "./components/Wrapper";
 // import NowWhat from "./components/NowWhat";
 import SelectDropDown from "./components/SelectDropDown";
 import CurrentDataContainer from "./components/CurrentDataContainer";
+// import ChartContainer from "./components/ChartContainer";
 
+const subscriptionClient = new SubscriptionClient(
+  "wss://react.eogresources.com/graphql",
+  {}
+);
 
-const client = new ApolloClient({
-  uri: "https://react.eogresources.com/graphql",
+const client = createClient({
+  url: "https://react.eogresources.com/graphql",
+  exchanges: [
+    debugExchange,
+    cacheExchange,
+    fetchExchange,
+    subscriptionExchange({
+      forwardSubscription: operation => subscriptionClient.request(operation)
+    })
+  ]
 });
 
 const store = createStore();
@@ -38,20 +58,21 @@ const theme = createMuiTheme({
 });
 
 const App = props => (
-  <ApolloProvider client={client}>
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      <Provider store={store}>
+  <MuiThemeProvider theme={theme}>
+    <CssBaseline />
+    <Provider store={store}>
+      <UrqlProvider value={client}>
         <Wrapper>
           <Header />
-          <SelectDropDown/>
-          <CurrentDataContainer/>
+          <SelectDropDown />
+          <CurrentDataContainer />
+          {/* <ChartContainer/> */}
           {/* <NowWhat /> */}
           <ToastContainer />
         </Wrapper>
-      </Provider>
-    </MuiThemeProvider>
-  </ApolloProvider>
+      </UrqlProvider>
+    </Provider>
+  </MuiThemeProvider>
 );
 
 export default App;
