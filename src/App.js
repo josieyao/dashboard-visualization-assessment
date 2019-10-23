@@ -19,7 +19,7 @@ import Wrapper from "./components/Wrapper";
 // import NowWhat from "./components/NowWhat";
 import SelectDropDown from "./components/SelectDropDown";
 import CurrentDataContainer from "./components/CurrentDataContainer";
-// import ChartContainer from "./components/ChartContainer";
+import ChartContainer from "./components/ChartContainer";
 
 const subscriptionClient = new SubscriptionClient(
   "wss://react.eogresources.com/graphql",
@@ -66,7 +66,7 @@ const App = props => (
           <Header />
           <SelectDropDown />
           <CurrentDataContainer />
-          {/* <ChartContainer/> */}
+          <ChartContainer/>
           {/* <NowWhat /> */}
           <ToastContainer />
         </Wrapper>
