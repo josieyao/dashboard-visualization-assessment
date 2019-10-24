@@ -15,8 +15,6 @@ import {
 } from "urql";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import Header from "./components/Header";
-import Wrapper from "./components/Wrapper";
-// import NowWhat from "./components/NowWhat";
 import SelectDropDown from "./components/SelectDropDown";
 import CurrentDataContainer from "./components/CurrentDataContainer";
 import ChartContainer from "./components/ChartContainer";
@@ -62,14 +60,11 @@ const App = props => (
     <CssBaseline />
     <Provider store={store}>
       <UrqlProvider value={client}>
-        <Wrapper>
           <Header />
           <SelectDropDown />
           <CurrentDataContainer />
           <ChartContainer/>
-          {/* <NowWhat /> */}
           <ToastContainer />
-        </Wrapper>
       </UrqlProvider>
     </Provider>
   </MuiThemeProvider>
