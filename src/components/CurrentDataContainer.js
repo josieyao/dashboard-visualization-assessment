@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import CurrentDataCard from "./CurrentDataCard";
 import { useSubscription } from "urql";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../store/actions";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import CurrentDataCard from "./CurrentDataCard";
 
 const query = `
   subscription {
@@ -17,7 +17,6 @@ const query = `
   }
 `;
 
-
 const getSelectedMetrics = state => {
   return state.metric.selectedMetrics;
 };
@@ -25,7 +24,6 @@ const getSelectedMetrics = state => {
 const CurrentDataContainer = () => {
   const selectedMetrics = useSelector(getSelectedMetrics);
   const dispatch = useDispatch();
-
 
   const [result] = useSubscription({
     query
@@ -40,8 +38,6 @@ const CurrentDataContainer = () => {
 
     if (!data) return;
       const { newMeasurement } = data;
-      // console.log(newMeasurement);
-
       dispatch({ type: actions.METRIC_MEASUREMENTS_RECEIVED, newMeasurement });
     }, [dispatch, data, error]
   );
@@ -49,10 +45,11 @@ const CurrentDataContainer = () => {
   if (!data) return null;
   if (error) return `Error! ${error}`;
 
+  //styling
   const flexContainer = {
-    padding: 0,
+    padding: '10px',
     display: 'grid',
-    grid: '100px / auto auto auto auto'
+    grid: '100px / auto auto auto auto',
   };
 
   if (selectedMetrics.length === 0) {
