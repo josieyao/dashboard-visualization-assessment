@@ -2,31 +2,8 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useQuery } from "urql";
 import * as actions from "../store/actions";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import Chart from "./Chart";
-
-//   s = ["oilTemp"]
-//   m = [
-//         {at: 1571726094241
-//         metric: "oilTemp"
-//         unit: "F"
-//         value: 127.16}
-//     ]
-
-let convertUnixToTime = heartBeat => {
-  let date = new Date(heartBeat); // - 60 * 1000).toUTCString().slice(-11, -4);
-
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  // let seconds = date.getSeconds();
-
-  if (hours > 12) hours = hours - 12;
-  if (hours < 10) hours = `${hours}`;
-  if (minutes < 10) minutes = `${minutes}`;
-  // if (seconds < 10) seconds = `${seconds}`;
-
-  return `${hours}:${minutes}`;
-};
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const query2 = `
   query($input: [MeasurementQuery!]!) {
@@ -42,6 +19,21 @@ const query2 = `
   }
 `;
 
+let convertUnixToTime = heartBeat => {
+  let date = new Date(heartBeat);
+
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  // let seconds = date.getSeconds();
+
+  if (hours > 12) hours = hours - 12;
+  if (hours < 10) hours = `${hours}`;
+  if (minutes < 10) minutes = `${minutes}`;
+  // if (seconds < 10) seconds = `${seconds}`;
+
+  return `${hours}:${minutes}`;
+};
+
 const ChartContainer = () => {
   const dispatch = useDispatch();
   //get all measurement data from state
@@ -49,6 +41,9 @@ const ChartContainer = () => {
 
   //get selected metrics from state
   const selectedMetrics = useSelector(state => state.metric.selectedMetrics);
+
+  //get current unix time stamp (heartbeat) from state
+  const heartBeat = useSelector(state => state.metric.heartBeat);
 
   //filter measurement data based on selected metrics
   let filteredMeasurements = selectedMetrics.map(chosenMetric => {
@@ -59,13 +54,7 @@ const ChartContainer = () => {
 
   // //creating the query input to find historical data (30 minutes before)
   let withinTimestamp = 30
-  let time;
-
-  // let currentUnixTime = new Date().getTime();
-  // if (heartBeatTime !== undefined) {
-    time = new Date(1571934517907 - withinTimestamp * 60000).getTime();
-    // time = new Date(1571933042712 - withinTimestamp * 60000).getTime();
-  // }
+  let time = new Date(heartBeat - withinTimestamp * 60000).getTime();
 
   let input = selectedMetrics.map(metricName => ({
     metricName: metricName,
@@ -74,9 +63,6 @@ const ChartContainer = () => {
 
   const [result] = useQuery({ query: query2, variables: { input } });
   const { fetching, data, error } = result;
-
-
-  console.log(data)
 
   useEffect(() => {
     if (error) {
@@ -87,14 +73,15 @@ const ChartContainer = () => {
     if (!data) return;
     const { getMultipleMeasurements } = data;
     dispatch({
-      type: actions.PAST_MEASUREMENTS_RECEIVED,
-      pastMeasurements: getMultipleMeasurements
+      type: actions.HISTORICAL_MEASUREMENTS_RECEIVED,
+      historicalMeasurements: getMultipleMeasurements
     });
   }, [dispatch, data, error]);
 
   if (!data) return null;
   if (error) return `Error! ${error}`;
 
+  //set chart data and configurations
   let chartData = {
     labels: [],
     datasets: []
@@ -108,13 +95,23 @@ const ChartContainer = () => {
       }
     }
   ];
+  let options = {
+    animation: false,
+    responsive: true,
+    fill: false,
+    scales: {
+      yAxes: yAxisConfig,
+      xAxes: xAxisConfig
+    }
+  };
 
+  //transform the data to feed in the chart
   let transformedArray = selectedMetrics.map((metricName, i) => {
-    let dataa = filteredMeasurements[i].filter(dataSet => {
+    let transformedMetricArray = filteredMeasurements[i].filter(dataSet => {
       return metricName === dataSet.metric;
     });
-    let dataValues = dataa.map(data => data.value);
-    let timestamps = dataa.map(data => convertUnixToTime(data.at));
+    let dataValues = transformedMetricArray.map(data => data.value);
+    let timestamps = transformedMetricArray.map(data => convertUnixToTime(data.at));
 
     chartData.labels = timestamps;
 
@@ -128,15 +125,14 @@ const ChartContainer = () => {
         labelString:
           metricName === "tubingPressure" || metricName === "casingPressure"
             ? "PSI"
-            : metricName === "flareTemp" ||
-              metricName === "oilTemp" ||
-              metricName === "waterTemp"
+            : metricName === "flareTemp" || metricName === "oilTemp" || metricName === "waterTemp"
             ? "F"
             : "%"
       }
     });
     return { label: metricName, data: dataValues, yAxisID: i };
   });
+
   chartData.datasets = transformedArray;
 
   //set the line colors for the chart
@@ -156,16 +152,6 @@ const ChartContainer = () => {
   });
 
   chartData.datasets = chartColors
-
-  let options = {
-    animation: false,
-    responsive: true,
-    fill: false,
-    scales: {
-      yAxes: yAxisConfig,
-      xAxes: xAxisConfig
-    }
-  };
 
   if (selectedMetrics.length === 0) {
     return null;

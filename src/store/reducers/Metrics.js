@@ -1,10 +1,11 @@
 import * as actions from "../actions";
 
 const initialState = {
+  heartBeat: 0,
   metrics: [],
   selectedMetrics: [],
   metricMeasurements: [],
-  pastMeasurements: []
+  historicalMeasurements: []
 };
 
 //get metrics list for select drop down
@@ -19,6 +20,7 @@ const selectDropDownDataReceived = (state = initialState, action) => {
 const selectedMetricsReceived = (state = initialState, action) => {
   return {
     ...state,
+    heartBeat: new Date().getTime(),
     selectedMetrics: [...action.options]
   };
 };
@@ -31,11 +33,12 @@ const metricMeasurementsReceived = (state = initialState, action) => {
   };
 };
 
-const pastMeasurementsReceived = (state = initialState, action) => {
+//get historical measurements
+const historicalMeasurementsReceived = (state = initialState, action) => {
   return {
     ...state,
     metricMeasurements: [
-      ...action.pastMeasurements.reduce(
+      ...action.historicalMeasurements.reduce(
         (measurments, measurement) => [
           ...measurments,
           ...measurement.measurements
@@ -50,7 +53,7 @@ const handlers = {
   [actions.SELECT_DROP_DOWN_DATA_RECEIVED]: selectDropDownDataReceived,
   [actions.SELECTED_METRICS_RECEIVED]: selectedMetricsReceived,
   [actions.METRIC_MEASUREMENTS_RECEIVED]: metricMeasurementsReceived,
-  [actions.PAST_MEASUREMENTS_RECEIVED]: pastMeasurementsReceived
+  [actions.HISTORICAL_MEASUREMENTS_RECEIVED]: historicalMeasurementsReceived
 };
 
 export default (state = initialState, action) => {

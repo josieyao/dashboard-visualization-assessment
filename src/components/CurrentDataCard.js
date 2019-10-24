@@ -4,6 +4,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "./CardHeader";
 
+//get the most current measurement data for a selected metric
 const CurrentDataCard = ({ metricName }) => {
   let newMeasurement = useSelector(state =>
     [...state.metric.metricMeasurements]

@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 import {
   cacheExchange,
   createClient,
-  debugExchange,
   fetchExchange,
   Provider as UrqlProvider,
   subscriptionExchange
@@ -27,7 +26,6 @@ const subscriptionClient = new SubscriptionClient(
 const client = createClient({
   url: "https://react.eogresources.com/graphql",
   exchanges: [
-    debugExchange,
     cacheExchange,
     fetchExchange,
     subscriptionExchange({
@@ -55,7 +53,7 @@ const theme = createMuiTheme({
   }
 });
 
-const App = props => (
+const App = () => (
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
     <Provider store={store}>
@@ -71,3 +69,4 @@ const App = props => (
 );
 
 export default App;
+
