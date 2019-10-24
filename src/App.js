@@ -58,15 +58,14 @@ const App = () => (
     <CssBaseline />
     <Provider store={store}>
       <UrqlProvider value={client}>
-          <Header />
-          <SelectDropDown />
-          <CurrentDataContainer />
-          <ChartContainer/>
-          <ToastContainer />
+        <Header />
+        <SelectDropDown />
+        <CurrentDataContainer />
+        <ChartContainer />
+        <ToastContainer />
       </UrqlProvider>
     </Provider>
   </MuiThemeProvider>
 );
 
 export default App;
-

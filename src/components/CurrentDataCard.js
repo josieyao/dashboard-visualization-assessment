@@ -13,7 +13,10 @@ const CurrentDataCard = ({ metricName }) => {
   );
 
   return (
-    <Card className="mr-3 text-center d-inline-block" style={{display: "flex"}}>
+    <Card
+      className="mr-3 text-center d-inline-block"
+      style={{ display: "flex" }}
+    >
       <CardHeader title={newMeasurement.metric} />
       <CardContent>
         <h4>
@@ -26,4 +29,3 @@ const CurrentDataCard = ({ metricName }) => {
 };
 
 export default CurrentDataCard;
-

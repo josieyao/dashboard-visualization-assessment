@@ -53,7 +53,7 @@ const ChartContainer = () => {
   });
 
   // //creating the query input to find historical data (30 minutes before)
-  let withinTimestamp = 30
+  let withinTimestamp = 30;
   let time = new Date(heartBeat - withinTimestamp * 60000).getTime();
 
   let input = selectedMetrics.map(metricName => ({
@@ -111,7 +111,9 @@ const ChartContainer = () => {
       return metricName === dataSet.metric;
     });
     let dataValues = transformedMetricArray.map(data => data.value);
-    let timestamps = transformedMetricArray.map(data => convertUnixToTime(data.at));
+    let timestamps = transformedMetricArray.map(data =>
+      convertUnixToTime(data.at)
+    );
 
     chartData.labels = timestamps;
 
@@ -125,7 +127,9 @@ const ChartContainer = () => {
         labelString:
           metricName === "tubingPressure" || metricName === "casingPressure"
             ? "PSI"
-            : metricName === "flareTemp" || metricName === "oilTemp" || metricName === "waterTemp"
+            : metricName === "flareTemp" ||
+              metricName === "oilTemp" ||
+              metricName === "waterTemp"
             ? "F"
             : "%"
       }
@@ -136,22 +140,19 @@ const ChartContainer = () => {
   chartData.datasets = transformedArray;
 
   //set the line colors for the chart
-  let lineColors = 
-    {
-        tubingPressure: "rgb(255, 128, 128)",
-        flareTemp: "rgb(236, 179, 255)",
-        injValveOpen: "rgb(128, 179, 255)",
-        oilTemp: "rgb(0, 230, 115)",
-        casingPressure: "rgb(255, 255, 128)",
-        waterTemp: "rgb(255, 102, 163)"
-    }
-  ;
-
+  let lineColors = {
+    tubingPressure: "rgb(255, 128, 128)",
+    flareTemp: "rgb(236, 179, 255)",
+    injValveOpen: "rgb(128, 179, 255)",
+    oilTemp: "rgb(0, 230, 115)",
+    casingPressure: "rgb(255, 255, 128)",
+    waterTemp: "rgb(255, 102, 163)"
+  };
   let chartColors = chartData.datasets.map(dataSet => {
-      return {...dataSet, borderColor: lineColors[dataSet.label]}
+    return { ...dataSet, borderColor: lineColors[dataSet.label] };
   });
 
-  chartData.datasets = chartColors
+  chartData.datasets = chartColors;
 
   if (selectedMetrics.length === 0) {
     return null;
@@ -161,7 +162,7 @@ const ChartContainer = () => {
 
   return (
     <div>
-        <Chart chartData={chartData} options={options}></Chart>
+      <Chart chartData={chartData} options={options}></Chart>
     </div>
   );
 };

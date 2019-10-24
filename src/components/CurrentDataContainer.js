@@ -29,7 +29,7 @@ const CurrentDataContainer = () => {
     query
   });
   const { data, error } = result;
-  
+
   useEffect(() => {
     if (error) {
       dispatch({ type: actions.API_ERROR, error: error.message });
@@ -37,25 +37,26 @@ const CurrentDataContainer = () => {
     }
 
     if (!data) return;
-      const { newMeasurement } = data;
-      dispatch({ type: actions.METRIC_MEASUREMENTS_RECEIVED, newMeasurement });
-    }, [dispatch, data, error]
-  );
+    const { newMeasurement } = data;
+    dispatch({ type: actions.METRIC_MEASUREMENTS_RECEIVED, newMeasurement });
+  }, [dispatch, data, error]);
 
   if (!data) return null;
   if (error) return `Error! ${error}`;
 
   //styling
   const flexContainer = {
-    padding: '10px',
-    display: 'grid',
-    grid: '100px / auto auto auto auto',
+    padding: "10px",
+    display: "grid",
+    grid: "100px / auto auto auto auto"
   };
 
   if (selectedMetrics.length === 0) {
     return (
-      <h2 style={{marginLeft: '14px'}}>Please type in the search bar to select metrics</h2>
-    )
+      <h2 style={{ marginLeft: "14px" }}>
+        Please type in the search bar to select metrics
+      </h2>
+    );
   }
 
   return (

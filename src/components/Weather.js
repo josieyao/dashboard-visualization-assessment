@@ -56,18 +56,15 @@ const Weather = () => {
     }
   });
   const { fetching, data, error } = result;
-  useEffect(
-    () => {
-      if (error) {
-        dispatch({ type: actions.API_ERROR, error: error.message });
-        return;
-      }
-      if (!data) return;
-      const { getWeatherForLocation } = data;
-      dispatch({ type: actions.WEATHER_DATA_RECEIVED, getWeatherForLocation });
-    },
-    [dispatch, data, error]
-  );
+  useEffect(() => {
+    if (error) {
+      dispatch({ type: actions.API_ERROR, error: error.message });
+      return;
+    }
+    if (!data) return;
+    const { getWeatherForLocation } = data;
+    dispatch({ type: actions.WEATHER_DATA_RECEIVED, getWeatherForLocation });
+  }, [dispatch, data, error]);
 
   if (fetching) return <LinearProgress />;
 
