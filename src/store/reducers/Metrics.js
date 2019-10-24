@@ -3,7 +3,8 @@ import * as actions from "../actions";
 const initialState = {
   metrics: [],
   selectedMetrics: [],
-  metricMeasurements: []
+  metricMeasurements: [],
+  pastMeasurements: []
 };
 
 //get metrics list for select drop down
@@ -30,10 +31,26 @@ const metricMeasurementsReceived = (state = initialState, action) => {
   };
 };
 
+const pastMeasurementsReceived = (state = initialState, action) => {
+  return {
+    ...state,
+    metricMeasurements: [
+      ...action.pastMeasurements.reduce(
+        (measurments, measurement) => [
+          ...measurments,
+          ...measurement.measurements
+        ],
+        []
+      )
+    ]
+  };
+};
+
 const handlers = {
   [actions.SELECT_DROP_DOWN_DATA_RECEIVED]: selectDropDownDataReceived,
   [actions.SELECTED_METRICS_RECEIVED]: selectedMetricsReceived,
-  [actions.METRIC_MEASUREMENTS_RECEIVED]: metricMeasurementsReceived
+  [actions.METRIC_MEASUREMENTS_RECEIVED]: metricMeasurementsReceived,
+  [actions.PAST_MEASUREMENTS_RECEIVED]: pastMeasurementsReceived
 };
 
 export default (state = initialState, action) => {
